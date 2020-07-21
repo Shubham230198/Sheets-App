@@ -104,27 +104,45 @@ $(document).ready(function() {
     //when click on save
     $("#Save").on("click", async function() {
         //open file saving dialog box.
-        let sdb = await dialog.showOpenDialog();
-
-        //get the first selected file (as user can select multiple files)
-        let firstFile = sdb.filePaths[0];
-        
-        //if no any file is selected in the dialogue box;
-        if(firstFile == undefined) {
-            alert("Please select any file, to save current file");
-            console.log("Please select a file first");
-            return;
-        }
-
-        //write current excel data into selected file.
         let jsonData = JSON.stringify(db);
-        fs.writeFileSync(firstFile, jsonData);
+
+        filename = dialog.showSaveDialog({
+            filters: [
+                { name: 'JSON Files', extensions: ['json'] }
+            ],
+            properties: ['openFile']
+        })
+        .then(result => {
+            filename = result.filePath;
+            if (filename === undefined) {
+                console.log('the user clicked the btn but didn\'t created a file');
+                return;
+            }
+
+            fs.writeFile(filename, jsonData, (err) => {
+                if (err) {
+                    console.log('an error ocurred with file creation ' + err.message);
+                    return
+                }
+                alert('File Saved');
+            })
+            
+        }).catch(err => {
+            alert(err)
+        })
+
     })
 
     //when click on open
     $("#Open").on("click", async function() {
         //open the dialog box, and get the selected file
-        let sdb = await dialog.showOpenDialog();
+        let sdb = await dialog.showOpenDialog({
+            filters: [
+                { name: 'JSON Files', extensions: ['json'] }
+            ],
+            properties: ['openFile']
+        });
+        
         let firstFile = sdb.filePaths[0];
 
         //if no file is selected, ask to select one.
@@ -158,7 +176,6 @@ $(document).ready(function() {
         }
 
     })
-
 
 
 

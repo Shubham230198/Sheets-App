@@ -8,7 +8,7 @@ const ejs = require('ejs-electron');
 //npm install ejs-electron --save-dev
 
 ejs.data({
-    'title': "My Excel",
+    'title': "Sheets",
     'rows': 100,
     'cols': 26
 });
@@ -21,7 +21,9 @@ function createWindow() {
         
         webPreferences: {
             nodeIntegration: true
-        }
+        },
+
+        transparent: true,
     });
 
     win.loadFile("index.ejs").then(function() {
@@ -35,7 +37,7 @@ function createWindow() {
         win.show();
 
         //to open dev tools
-        // win.webContents.openDevTools();
+        win.webContents.openDevTools();
     });
 }
 
